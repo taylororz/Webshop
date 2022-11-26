@@ -8,7 +8,7 @@ require_once __DIR__.'/includes.php';
 
 $userId = getCurrentUserId();
 $products = getAllProducts();
-
+var_dump($userId);
 setcookie('userId',$userId,strtotime('+30 days'));
 
 $cartItems = countProductsInCart($userId);
