@@ -13,15 +13,12 @@
         <h1>Willkommen auf meinem Online Shop</h1>
     </div>
 </header>
-<section class="container" id="products">
+<section class="container" id="cartItems">
+    <?php foreach( $cartItems as $cartItem):?>
     <div class="row">
-        <?php foreach($products as $product):?>
-        <div class="col">
-            <?php include 'card.php'?>
-        </div>
-        <?php endforeach; ?>
+        <?php include __DIR__.'/cartItem.php';?>
     </div>
-    
+    <?php endforeach;?>
 </section>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
 </body>

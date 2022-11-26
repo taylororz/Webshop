@@ -14,3 +14,19 @@
     $cartItems =$cartResults->fetchColumn();
     return $cartItems;
  }
+
+ function getCartItemsForUserId(int $userId){
+   $sql="SELECT product_id, titel, beschreibung, preis, pics
+         FROM `shopping cart`
+         JOIN products ON(`shopping cart`.product_id = products.id)
+         WHERE user_id = ".$userId;
+   $results = getDB()->query($sql);
+   if($results===false){
+      return[];
+   }
+   $found = [];
+   while($row = $results->fetch()){
+      $found[]=$row;
+   }
+   return $found;
+ }
