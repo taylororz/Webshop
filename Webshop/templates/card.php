@@ -6,7 +6,7 @@
     <div class="card-body">
         <?=$product['beschreibung'] ?>
         <hr>
-        <?=$product['preis']?>,00 &#8364
+        <?=$product['preis']?> &#8364
     </div>
     <div class="card-footer">
         <a href="" class="btn btn-primary btn-sm">details</a>
