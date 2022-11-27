@@ -30,3 +30,15 @@
    }
    return $found;
  }
+
+function getCartSumForUserId(int $userId):int{
+   $sql="SELECT SUM(preis)
+         FROM `shopping cart`
+         JOIN products ON(`shopping cart`.product_id = products.id)
+         WHERE user_id = ".$userId;
+   $result = getDB()->query($sql);
+   if($result===false){
+      return 0;
+   }
+   return (int)$result->fetchColumn();
+}
