@@ -19,9 +19,10 @@
      <h2>Warenkorb</h2>
     </div>
     <div class="row cartItemHeader">
-		<div class="col-12 text-end">
-			Preis
-		</div>
+    <div class="row">
+        <div class="col-8 text-end">Quantity</div>
+        <div class="col-4 text-end">Preis</div>
+    </div>
 	</div>
     <?php foreach( $cartItems as $cartItem):?>
     <div class="row cartItem">
@@ -30,7 +31,7 @@
     <?php endforeach;?>
     <div class="row">
         <div class="col-12 text-end">
-        Summe (<?= $countCartItems ?> Artikel): <span class="preis"><?=$cartSum ?> &#8364</span>
+        Summe (<?= $countCartItems ?> Artikel): <span class="preis"><?=number_format ($cartSum,2,"," , " ") ?> &#8364</span>
         </div>
     </div>
     <div class="row">
