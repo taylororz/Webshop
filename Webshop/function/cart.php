@@ -44,3 +44,21 @@ function getCartSumForUserId(int $userId){
    }
    return $result->fetchColumn();
 }
+
+function moveCartProductsToAnotherUser(int $sourceUserId,int $targetUserId){
+   $sql="UPDATE `shopping cart`
+         SET user_id=:targetUserId
+         WHERE user_id=:sourceUserId";
+
+   $statement = getDB()->prepare($sql);
+   if(false === $statement){
+      return 0;
+   }
+
+   return $statement->execute(
+      [
+         ':targetUserId'=>$targetUserId,
+         ':sourceUserId'=>$sourceUserId
+      ]
+   );
+}
