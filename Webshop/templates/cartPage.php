@@ -31,11 +31,11 @@
     <?php endforeach;?>
     <div class="row">
         <div class="col-12 text-end">
-        Summe (<?= $countCartItems ?> Artikel): <span class="preis"><?=number_format ($cartSum,2,"," , " ") ?> &#8364</span>
+        Summe (<?= $countCartItems ?> Artikel): <span class="preis"><?=number_format($cartSum,2,","," ")?> &#8364</span>
         </div>
     </div>
     <div class="row">
-        <a href="#" class="btn btn-primary col-12">Kasse</a>
+        <a href="index.php/checkout" class="btn btn-primary col-12">Kasse</a>
     </div>
 </section>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>

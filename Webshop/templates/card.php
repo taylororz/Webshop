@@ -6,7 +6,7 @@
     <div class="card-body">
         <?=$product['beschreibung'] ?>
         <hr>
-        <?=number_format ($product['preis'],2,"," , " ") ?> &#8364
+        <?=number_format($product['preis'],2,"," , " ") ?> &#8364
     </div>
     <div class="card-footer">
         <a href="" class="btn btn-primary btn-sm">details</a>
