@@ -1,7 +1,7 @@
 <form mehtod="POST" action="index.php/deliveryAddress/add">
     <div class="card">
     <div class="card-header">
-        Neue Adress
+        Neue Address
     </div>
     <div class="card-body">
         <?php if($hasErrors):?>
