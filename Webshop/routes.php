@@ -44,7 +44,7 @@ if(strpos($route,'/cart')!==false){
     exit();
 }
 if(strpos($route,'/login')!== false){
-    $isPost = strtoupper($_SERVER['REQUEST_METHOD']) === 'POST';
+    $isPost = isPost();
     $username="";
     $password="";
     $errors=[];
@@ -87,6 +87,8 @@ if(strpos ($route, '/checkout') !== false) {
         header("Location: ".$baseUrl."index.php/login");
         exit();
     }
+    
+    require __DIR__. '/templates/selectDeliveryAddress.php';
     exit();
 }
 
@@ -101,7 +103,47 @@ if(strpos($route,'/logout') !== false){
     exit();
 }
 
+if(strpos($route,'/address/add') !== false){
+    if(false === isLoggedIn()){
+        $_SESSION['redirectTarget']=$baseUrl.'index.php/address/add';
+        header("Location: ".$baseUrl."index.php/login");
+        exit();
+    }
+    
+    $recipient="";
+    $street="";
+    $streetNr="";
+    $city="";
+    $zipCode="";
+    $isPost = isPost();
+    $errors=[];
+    if($isPost){
+        $recipient = filter_input(INPUT_POST,'recipient');
+        $street = filter_input(INPUT_POST,'street');
+        $streetNr = filter_input(INPUT_POST,'streetNr');
+        $city = filter_input(INPUT_POST,'city');
+        $zipCode = filter_input(INPUT_POST,'zipCode');
 
+        if(!$recipient){
+            $errors[]="Bitte Empfänger eintragen";
+        }
+        if(!$street){
+            $errors[]="Bitte Straße eintragen";
+        }
+        if(!$streetNr){
+            $errors[]="Bitte Hausnummer eintragen";
+        }
+        if(!$city){
+            $errors[]="Bitte Stadt eintragen";
+        }
+        if(!$zipCode){
+            $errors[]="Bitte PLZ eintragen";
+        }
+    }
+    $hasErrors = count($errors) > 0;
 
+    require __DIR__.'/templates/selectDeliveryAddress.php';
+    exit();
+}
 
 
