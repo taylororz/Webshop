@@ -1,16 +1,16 @@
-<form mehtod="POST" action="index.php/deliveryAddress/add">
+<form mehtod="POST" action="index.php/address/add">
     <div class="card">
     <div class="card-header">
         Neue Address
     </div>
     <div class="card-body">
-        <?php if($hasErrors):?>
-            <ul class="alert alert-danger" role="alert">
-            <?php foreach($errors as $errorMessage):?>
-                   <li><?=$errorMessage?></li>
-                   <?php endforeach?>
-                </ul>
-                <?php endif;?>
+    <?php if($hasErrors):?>
+         <ul class="alert alert-danger">
+           <?php foreach($errors as $errorMessage):?>
+             <li><?= $errorMessage ?></li>
+           <?php endforeach?>
+         </ul>
+       <?php endif?>
         <div class="form-group">
             <label for="recipient">Empfänger</label>
             <input name="recipient" class="form-control" id="recipient">

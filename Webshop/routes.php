@@ -78,7 +78,7 @@ if(strpos($route,'/login')!== false){
         }
           }
     
-    $hasErrors = count($errors) >0;
+    $hasErrors = count($errors) > 0;
     require __DIR__. '/templates/login.php';
     exit();
 }
@@ -105,7 +105,7 @@ if(strpos($route,'/logout') !== false){
 
 if(strpos($route,'/address/add') !== false){
     if(false === isLoggedIn()){
-        $_SESSION['redirectTarget']=$baseUrl.'index.php/address/add';
+        $_SESSION['redirectTarget'] = $baseUrl.'index.php/address/add';
         header("Location: ".$baseUrl."index.php/login");
         exit();
     }
@@ -141,6 +141,7 @@ if(strpos($route,'/address/add') !== false){
         }
     }
     $hasErrors = count($errors) > 0;
+    
 
     require __DIR__.'/templates/selectDeliveryAddress.php';
     exit();
