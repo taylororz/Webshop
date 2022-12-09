@@ -82,15 +82,28 @@ if(strpos($route,'/login')!== false){
     require __DIR__. '/templates/login.php';
     exit();
 }
-if(strpos ($route, '/checkout') !== false) {
+if(strpos($route,'/checkout') !== false){
     if(!isLoggedIn()){
-        header("Location: ".$baseUrl."index.php/login");
-        exit();
-    }
-    
-    require __DIR__. '/templates/selectDeliveryAddress.php';
-    exit();
-}
+      $_SESSION['redirectTarget'] = $baseUrl.'index.php/checkout';
+       header("Location: ".$baseUrl."index.php/login");
+       exit();
+     }
+  
+     $recipient = "";
+     $city ="";
+     $street = "";
+     $streetNr ="";
+     $zipCode ="";
+     $recipientIsValid = true;
+     $cityIsValid = true;
+     $streetIsValid =true;
+     $streetNrIsValid = true;
+     $zipCodeIsValid = true;
+     $errors = [];
+     $hasErrors = count($errors) >0;
+     require __DIR__.'/templates/selectDeliveryAddress.php';
+     exit();
+   }
 
 if(strpos($route,'/logout') !== false){
     session_regenerate_id(true);
@@ -103,46 +116,60 @@ if(strpos($route,'/logout') !== false){
     exit();
 }
 
-if(strpos($route,'/address/add') !== false){
+if(strpos($route,'/deliveryAddress/add') !== false){
     if(false === isLoggedIn()){
-        $_SESSION['redirectTarget'] = $baseUrl.'index.php/address/add';
-        header("Location: ".$baseUrl."index.php/login");
-        exit();
+      $_SESSION['redirectTarget'] = $baseUrl.'index.php/deliveryAddress/add';
+      header("Location: ".$baseUrl."index.php/login");
+      exit();
     }
-    
-    $recipient="";
-    $street="";
-    $streetNr="";
-    $city="";
-    $zipCode="";
+    $recipient = "";
+    $city ="";
+    $street = "";
+    $streetNr ="";
+    $zipCode ="";
+    $recipientIsValid = true;
+    $cityIsValid = true;
+    $streetIsValid =true;
+    $streetNumberIsValid = true;
+    $zipCodeIsValid = true;
     $isPost = isPost();
-    $errors=[];
-    if($isPost){
-        $recipient = filter_input(INPUT_POST,'recipient');
-        $street = filter_input(INPUT_POST,'street');
-        $streetNr = filter_input(INPUT_POST,'streetNr');
-        $city = filter_input(INPUT_POST,'city');
-        $zipCode = filter_input(INPUT_POST,'zipCode');
+    $errors = [];
 
-        if(!$recipient){
-            $errors[]="Bitte Empfänger eintragen";
-        }
-        if(!$street){
-            $errors[]="Bitte Straße eintragen";
-        }
-        if(!$streetNr){
-            $errors[]="Bitte Hausnummer eintragen";
-        }
-        if(!$city){
-            $errors[]="Bitte Stadt eintragen";
-        }
-        if(!$zipCode){
-            $errors[]="Bitte PLZ eintragen";
-        }
+    if($isPost){
+        $recipient = filter_input(INPUT_POST,'recipient',FILTER_SANITIZE_SPECIAL_CHARS);
+        $recipient = trim($recipient);
+        $city = filter_input(INPUT_POST,'city',FILTER_SANITIZE_SPECIAL_CHARS);
+        $city = trim($city);
+        $street = filter_input(INPUT_POST,'street',FILTER_SANITIZE_SPECIAL_CHARS);
+        $street = trim($street);
+        $streetNr = filter_input(INPUT_POST,'streetNr',FILTER_SANITIZE_SPECIAL_CHARS);
+        $streetNr = trim($streetNr);
+        $zipCode = filter_input(INPUT_POST,'zipCode',FILTER_SANITIZE_SPECIAL_CHARS);
+        $zipCode = trim($zipCode);
+    
+
+    if(!$recipient){
+        $errors[]="Bitte Empfänger eintragen";
+        $recipientIsValid = false;
+      }
+      if(!$city){
+        $errors[]="Bitte Stadt eintragen";
+        $cityIsValid = false;
+      }
+      if(!$street){
+        $errors[]="Bitte Stasse eintragen";
+        $streetIsValid = false;
+      }
+      if(!$streetNr){
+        $errors[]="Bitte Hausnummer eintragen";
+        $streetNrIsValid = false;
+      }
+      if(!$zipCode){
+        $errors[]="Bitte PLZ Eintragen";
+        $zipCodeIsValid = false;
+      }
     }
     $hasErrors = count($errors) > 0;
-    
-
     require __DIR__.'/templates/selectDeliveryAddress.php';
     exit();
 }

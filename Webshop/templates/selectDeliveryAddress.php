@@ -1,9 +1,10 @@
-<?php require_once __DIR__. '/header.php' ?>
+<?php require_once __DIR__.'/header.php'?>
 
-<section class="container" id="newDelieryAddress">
-<?php require_once __DIR__.'/addressForm.php'?>
-</section>
+ <section class="container" id="newDelieryAdress">
+   <?php require_once __DIR__.'/deliveryAdressForm.php'?>
+ </section>
 
-<section id="selectDeliveryAddress">
-</section>
-<?php require_once __DIR__. '/footer.php' ?>
+ <section class="container" id="selectDeliveryAdress">
+ </section>
+
+ <?php require_once __DIR__.'/footer.php'?>
