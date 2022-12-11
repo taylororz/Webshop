@@ -47,6 +47,7 @@ if(strpos($route,'/cart')!==false){
 }
 
 if(strpos($route,'/checkout')!==false){
+  redirectIfNotLogged('/checkout');
   $cartItems = getCartItemsForUserId($userId);
   $cartSum = getCartSumForUserId($userId);
   require __DIR__. '/templates/checkout.php';

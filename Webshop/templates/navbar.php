@@ -1,19 +1,20 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
 <nav class="navbar navbar-expand-lg bg-white">
     <div class="container">
     <a class="navbar-brand" href="./">My shop</a>
     <ul class="navbar-nav">
         <li class="nav-item">
             <?php if(isLoggedIn()):?>
-                <a href="index.php/logout">Logout</a>
+                <a class="btn btn-danger" href="index.php/logout"><i class="bi bi-person"></i> Logout</a>
             <?php endif;?>
             <?php if(!isLoggedIn()):?>
-                <a href="index.php/login">Login</a>
-            <?php endif;?>
+                <a class="btn btn-success" href="index.php/login"><i class="bi bi-person"></i> Login</a>
+            <?php endif?>
         </li>
     </ul>
     <ul class="navbar-nav ml-auto">
 			<li class="nav-item">
-               <a href="./index.php/cart"> Warenkorb (<?=$countCartItems ?>)</a>
+               <a class="btn btn-primary" href="./index.php/cart"> <i class="bi bi-cart"></i> Cart (<?=$countCartItems ?>)</a>
             </li>
     </ul>
     </div>

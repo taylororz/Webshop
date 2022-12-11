@@ -51,10 +51,12 @@
         white-space: nowrap;
         -webkit-overflow-scrolling: touch;
       }
+      .container {
+        max-width: 960px;
+      }
+      
     </style>
-
     
-    <link href="./assets/form-validation.css" rel="stylesheet">
   </head>
   <body>
     
@@ -87,7 +89,7 @@
           </li>
         </ul>
 
-        <form class="card p-2" method="POST" action="index.php/checkout">
+        <form class="card p-2 method="POST" action="index.php/checkout">
           <div class="input-group">
             <input type="text" class="form-control" placeholder="Promo code">
             <button type="submit" class="btn btn-secondary">Redeem</button>
@@ -97,24 +99,21 @@
         <h4 class="mb-3">Billing address</h4>
           <div class="row g-3">
             <div class="col-sm-6">
-              <label for="firstname" class="form-label">First name</label>
-              <input name="firstname" type="text" class="form-control" id="firstname" placeholder="" value="" required>
+              <label for="firstname" for="validationCustom01" class="form-label">First name</label>
+              <input name="firstname" id="validationCustom01" type="text" class="form-control" id="firstname" placeholder="" value="" required="">
               <div class="invalid-feedback">
-                Valid first name is required.
+                Please enter your first name.
               </div>
             </div>
 
             <div class="col-sm-6">
               <label for="lastname" class="form-label">Last name</label>
-              <input name="lastname" type="text" class="form-control" id="lastname" placeholder="" value="" required>
-              <div class="invalid-feedback">
-                Valid last name is required.
-              </div>
+              <input name="lastname" type="text" class="form-control" id="lastname" placeholder="" value="" required="">
             </div>
 
             <div class="col-12">
-              <label for="address1" class="form-label">Address</label>
-              <input name="address1" type="text" class="form-control" id="address1" placeholder="1234 Main St" required>
+              <label for="address1 validationCustom02" class="form-label">Address</label>
+              <input name="address1" type="text" class="form-control" id="address1 validationCustom02" placeholder="1234 Main St" required="">
               <div class="invalid-feedback">
                 Please enter your shipping address.
               </div>
@@ -126,24 +125,24 @@
             </div>
 
             <div class="col-md-5">
-              <label for="country" class="form-label">Country</label>
-              <input name="country" type="text" class="form-control" id="country" placeholder="Germany" required>
+              <label for="country validationCustom03" class="form-label">Country</label>
+              <input name="country" type="text" class="form-control" id="country validationCustom03" placeholder="Germany" required="">
               <div class="invalid-feedback">
                 Please select a valid country.
               </div>
             </div>
     
             <div class="col-md-4">
-              <label for="states" class="form-label">State</label>
-              <input name="states" type="text" class="form-control" id="states" placeholder="Baden-Württemberg" required>
+              <label for="states validationCustom04" class="form-label">State</label>
+              <input name="states" type="text" class="form-control" id="states validationCustom04" placeholder="Baden-Württemberg" required="">
               <div class="invalid-feedback">
                 Please provide a valid state.
               </div>
             </div>
 
             <div class="col-md-3">
-              <label for="zipCode" class="form-label">Zip</label>
-              <input name="zipCode" type="text" class="form-control" id="zipCode" placeholder="" required>
+              <label for="zipCode validationCustom05" class="form-label">Zip</label>
+              <input name="zipCode" type="text" class="form-control" id="zipCode validationCustom05" placeholder="" required="">
               <div class="invalid-feedback">
                 Zip code required.
               </div>
@@ -160,6 +159,16 @@
           <div class="form-check">
             <input type="checkbox" class="form-check-input" id="save-info">
             <label class="form-check-label" for="save-info">Save this information for next time</label>
+          </div>
+
+          <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required="">
+          <label class="form-check-label" for="invalidCheck">
+            Agree to terms and conditions
+          </label>
+          <div class="invalid-feedback">
+            You must agree before submitting.
+          </div>
           </div>
 
           <hr class="my-4">
@@ -188,21 +197,51 @@
 
             <div class="col-md-6">
               <label for="cc-number" class="form-label">Credit card number</label>
-              <input type="text" class="form-control" id="cc-number" placeholder="" required>
+              <input type="text" onkeyup="update(this.value);" class="form-control" id="cc-number" placeholder="" required>
+              <img src="Pics/1.png" id="img" width="20px" height="20px">
+              <span style="color:red;" id="invalid1"></span>
               <div class="invalid-feedback">
                 Credit card number is required
               </div>
             </div>
-
-            <div class="col-md-3">
+            
+            <div class="col-md-6">
               <label for="cc-expiration" class="form-label">Expiration</label>
-              <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
+              <div class="col-md-3">
+              <select class="form-select" style="width:auto;" id="exMonth" title="select a month">
+                <option value = "0"> Month</option>
+                <option value="01">Jan</option>
+                <option value="02">Feb</option>
+                <option value="03">Mar</option>
+                <option value="04">Apr</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">Aug</option>
+                <option value="09">Sep</option>
+                <option value="10">Oct</option>
+                <option value="11">Nov</option>
+                <option value="12">Dec</option>
+              </select>
+              </div>
+              <div class="col-md-3">
+              <select class="form-select" id="exYear" style="width:auto;" title="select a year">
+                <option value = "0"> Year</option>
+                <option value="2023">23</option>
+                <option value="2024">24</option>
+                <option value="2025">25</option>
+                <option value="2026">26</option>
+                <option value="2027">27</option>
+                <option value="2028">28</option>
+              </select>
+              </div>
+              <span style="color:red;" id="invalid2"></span>
               <div class="invalid-feedback">
                 Expiration date required
               </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-5">
               <label for="cc-cvv" class="form-label">CVV</label>
               <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
               <div class="invalid-feedback">
@@ -212,7 +251,7 @@
           </div>
 
           <hr class="my-4">
-
+        
           <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
         </form>
       </div>
@@ -229,9 +268,7 @@
   </footer>
 </div>
 
-
-    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
-
-      <script src="form-validation.js"></script>
+    <script src="../Webshop/javaScript/form-validation.js"></script>
+    <script src="../Webshop/javaScript/validCreditCardNumber.js"></script>
   </body>
 </html>
