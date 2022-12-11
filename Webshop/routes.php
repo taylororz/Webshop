@@ -11,6 +11,8 @@ if(substr($baseUrl,-1)!=='/'){
     $baseUrl .='/';
 }
 
+define('BASE_URL',$baseUrl);
+
 $route = null;
 
 if(false !== $indexPHPPosition){
@@ -43,6 +45,14 @@ if(strpos($route,'/cart')!==false){
     require __DIR__. '/templates/cartPage.php';
     exit();
 }
+
+if(strpos($route,'/checkout')!==false){
+  $cartItems = getCartItemsForUserId($userId);
+  $cartSum = getCartSumForUserId($userId);
+  require __DIR__. '/templates/checkout.php';
+  exit();
+}
+
 if(strpos($route,'/login')!== false){
     $isPost = isPost();
     $username="";
@@ -83,95 +93,64 @@ if(strpos($route,'/login')!== false){
     exit();
 }
 if(strpos($route,'/checkout') !== false){
-    if(!isLoggedIn()){
-      $_SESSION['redirectTarget'] = $baseUrl.'index.php/checkout';
-       header("Location: ".$baseUrl."index.php/login");
-       exit();
-     }
+  redirectIfNotLogged('/checkout');
   
-     $recipient = "";
-     $city ="";
-     $street = "";
-     $streetNr ="";
-     $zipCode ="";
-     $recipientIsValid = true;
-     $cityIsValid = true;
-     $streetIsValid =true;
-     $streetNrIsValid = true;
-     $zipCodeIsValid = true;
-     $errors = [];
-     $hasErrors = count($errors) >0;
-     require __DIR__.'/templates/selectDeliveryAddress.php';
-     exit();
+  $firstname = "";
+  $lastname= "";
+  $address1 = "";
+  $address2 = "";
+  $country= "";
+  $states= "";
+  $zipCode = "";
+  $isPost = isPost();
+  $errors = [];
+  
+
+  if($isPost){
+    $firstname = filter_input(INPUT_POST,'firstname',FILTER_SANITIZE_SPECIAL_CHARS);
+    $firstname=trim($firstname);
+    $lastname = filter_input(INPUT_POST,'lastname',FILTER_SANITIZE_SPECIAL_CHARS);
+    $lastname=trim($lastname);
+    $address1 = filter_input(INPUT_POST,'address1',FILTER_SANITIZE_SPECIAL_CHARS);
+    $address1=trim($address1);
+    $address2 = filter_input(INPUT_POST,'address2',FILTER_SANITIZE_SPECIAL_CHARS);
+    $address2=trim($address2);
+    $country = filter_input(INPUT_POST,'country',FILTER_SANITIZE_SPECIAL_CHARS);
+    $country=trim($country);
+    $states = filter_input(INPUT_POST,'states',FILTER_SANITIZE_SPECIAL_CHARS);
+    $states=trim($states);
+    $zipCode = filter_input(INPUT_POST,'zipCode',FILTER_SANITIZE_SPECIAL_CHARS);
+    $zipCode=trim($zipCode);
+
+    if(count($errors)===0){
+      $saveAddressForUser=saveAddressForUser($userId,$firstname,$lastname,$address1,$address2,$country,$states,$zipCode);
+      if($saveAddressForUser > 0){
+      $_SESSION['saveAddressForUser']=$saveAddressForUser;
+        header("Location: ".$baseUrl."index.php/success");
+        exit();
+     }
+     $errors[]="Invalid address";
+    }
+   }
+  require __DIR__ .'/templates/checkout.php';
+  exit();
    }
 
-if(strpos($route,'/logout') !== false){
-    session_regenerate_id(true);
-    session_destroy();
+
+   if(strpos($route,'/logout') !== false){
     $redirectTarget = $baseUrl.'index.php';
     if(isset($_SESSION['redirectTarget'])){
-        $redirectTarget = $_SESSION['redirectTarget'];
+      $redirectTarget = $_SESSION['redirectTarget'];
     }
-    header("Location: ". $redirectTarget);
+    session_regenerate_id(true);
+    session_destroy();
+    header("Location: ".$redirectTarget);
     exit();
-}
+  }
 
-if(strpos($route,'/deliveryAddress/add') !== false){
-    if(false === isLoggedIn()){
-      $_SESSION['redirectTarget'] = $baseUrl.'index.php/deliveryAddress/add';
-      header("Location: ".$baseUrl."index.php/login");
-      exit();
-    }
-    $recipient = "";
-    $city ="";
-    $street = "";
-    $streetNr ="";
-    $zipCode ="";
-    $recipientIsValid = true;
-    $cityIsValid = true;
-    $streetIsValid =true;
-    $streetNumberIsValid = true;
-    $zipCodeIsValid = true;
-    $isPost = isPost();
-    $errors = [];
 
-    if($isPost){
-        $recipient = filter_input(INPUT_POST,'recipient',FILTER_SANITIZE_SPECIAL_CHARS);
-        $recipient = trim($recipient);
-        $city = filter_input(INPUT_POST,'city',FILTER_SANITIZE_SPECIAL_CHARS);
-        $city = trim($city);
-        $street = filter_input(INPUT_POST,'street',FILTER_SANITIZE_SPECIAL_CHARS);
-        $street = trim($street);
-        $streetNr = filter_input(INPUT_POST,'streetNr',FILTER_SANITIZE_SPECIAL_CHARS);
-        $streetNr = trim($streetNr);
-        $zipCode = filter_input(INPUT_POST,'zipCode',FILTER_SANITIZE_SPECIAL_CHARS);
-        $zipCode = trim($zipCode);
+if(strpos($route,'/checkout/susscess') !== false){
+  redirectIfNotLogged('/checkout/susscess');
     
-
-    if(!$recipient){
-        $errors[]="Bitte Empfänger eintragen";
-        $recipientIsValid = false;
-      }
-      if(!$city){
-        $errors[]="Bitte Stadt eintragen";
-        $cityIsValid = false;
-      }
-      if(!$street){
-        $errors[]="Bitte Stasse eintragen";
-        $streetIsValid = false;
-      }
-      if(!$streetNr){
-        $errors[]="Bitte Hausnummer eintragen";
-        $streetNrIsValid = false;
-      }
-      if(!$zipCode){
-        $errors[]="Bitte PLZ Eintragen";
-        $zipCodeIsValid = false;
-      }
-    }
-    $hasErrors = count($errors) > 0;
-    require __DIR__.'/templates/selectDeliveryAddress.php';
-    exit();
+   
 }
-
-

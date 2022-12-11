@@ -16,7 +16,7 @@
     <?php endforeach;?>
     <div class="row">
         <div class="col-12 text-end">
-        Summe (<?= $countCartItems ?> Artikel): <span class="preis"><?=number_format($cartSum,2,","," ")?> &#8364</span>
+        Summe (<?= $countCartItems ?> Artikel): <span class="preis"><?=number_format($cartSum/1,2,","," ")?> &#8364</span>
         </div>
     </div>
     <div class="row">
