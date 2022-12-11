@@ -46,13 +46,6 @@ if(strpos($route,'/cart')!==false){
     exit();
 }
 
-if(strpos($route,'/checkout')!==false){
-  redirectIfNotLogged('/checkout');
-  $cartItems = getCartItemsForUserId($userId);
-  $cartSum = getCartSumForUserId($userId);
-  require __DIR__. '/templates/checkout.php';
-  exit();
-}
 
 if(strpos($route,'/login')!== false){
     $isPost = isPost();
@@ -95,6 +88,9 @@ if(strpos($route,'/login')!== false){
 }
 if(strpos($route,'/checkout') !== false){
   redirectIfNotLogged('/checkout');
+
+  $cartItems = getCartItemsForUserId($userId);
+  $cartSum = getCartSumForUserId($userId);
   
   $firstname = "";
   $lastname= "";
@@ -152,6 +148,11 @@ if(strpos($route,'/checkout') !== false){
 
 if(strpos($route,'/checkout/susscess') !== false){
   redirectIfNotLogged('/checkout/susscess');
-    
-   
+  $userId=getCurrentUserId();
+  $cartItems = getCartItemsForUserId($userId);
+  if(createOrder($userId,$cartItems)){
+    clearCartForUser($userId);
+    require __DIR__ .'templates/thankyou.php';
+    exit();
+  }
 }

@@ -51,9 +51,6 @@
         white-space: nowrap;
         -webkit-overflow-scrolling: touch;
       }
-      .container {
-        max-width: 960px;
-      }
       
     </style>
     

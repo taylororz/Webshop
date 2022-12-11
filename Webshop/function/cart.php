@@ -79,3 +79,8 @@ function moveCartProductsToAnotherUser(int $sourceUserId,int $targetUserId):int{
       return $moveProducts;
    }
 
+   function clearCartForUser(int $userId){
+      $sql = "DELETE FROM `shopping cart` where userId = :userId";
+      $statement = getDB()->prepare($sql);
+      $statement ->execute([':userId'=>$userId]);
+   }
