@@ -13,14 +13,20 @@
     ]);
  }
 
- function countProductsInCart(int $userId){
+ function countProductsInCart(?int $userId){
+   if(null === $userId){
+      return 0;
+   }
     $sql ="SELECT COUNT(id) FROM `shopping cart` WHERE user_id =".$userId;
     $cartResults = getDB()->query($sql);
     $cartItems =$cartResults->fetchColumn();
     return $cartItems;
  }
 
- function getCartItemsForUserId(int $userId){
+ function getCartItemsForUserId(?int $userId):array{
+   if(null === $userId){
+      return [];
+   }
    $sql="SELECT product_id, titel, beschreibung, preis, pics, quantity
          FROM `shopping cart`
          JOIN products ON(`shopping cart`.product_id = products.id)
@@ -36,7 +42,10 @@
    return $found;
  }
 
-function getCartSumForUserId(int $userId){
+function getCartSumForUserId(?int $userId){
+   if(null === $userId){
+      return 0;
+   }
    $sql="SELECT SUM(preis*quantity)
          FROM `shopping cart`
          JOIN products ON(`shopping cart`.product_id = products.id)
@@ -80,7 +89,7 @@ function moveCartProductsToAnotherUser(int $sourceUserId,int $targetUserId):int{
    }
 
    function clearCartForUser(int $userId){
-      $sql = "DELETE FROM `shopping cart` where userId = :userId";
+      $sql = "DELETE FROM `shopping cart` where user_Id = :user_Id";
       $statement = getDB()->prepare($sql);
-      $statement ->execute([':userId'=>$userId]);
+      $statement ->execute([':user_Id'=>$userId]);
    }

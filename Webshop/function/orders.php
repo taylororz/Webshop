@@ -1,42 +1,163 @@
 <?php 
-function createOrder(int $userId,array $cartItems, string $status='new'):bool{
-    $sql="INSERT INTO orders SET 
+function createOrder(int $userId,array $cartItems,array $deliveryAddressFields,string $status = 'new'):bool{
+
+    $sql ="INSERT INTO orders SET  
             status = :status,
-            usedId = :userId";
+            userId = :userId";
     
     $statement = getDB()-> prepare($sql);
+    if(false === $statement){
+        echo printDBErrorMessage();
+        return false;
+    }
     $data = [
         ':status' => $status,
-        ':usedId' => $userId
+        ':userId' => $userId
     ];
 
-    $statement->execute($data);
+    $created=$statement->execute($data);
+    if(false === $created){
+        echo printDBErrorMessage();
+        return false;
+    }
     $orderId= getDB()->lastInsertId();
 
-    $sql="INSERT INTO order_products SET
+    $sql = "INSERT INTO order_address SET
+     order_id= :orderId,
+     firstname=:firstname,
+     lastname=:lastname,
+     address1=:address1,
+     address2=:address2,
+     country=:country,
+     city=:city,
+     zipCode=:zipCode";
+
+     $statement = getDB()->prepare($sql);
+     if(false === $statement){
+        echo printDBErrorMessage();
+        return false;
+    }
+     $data = [
+        ':orderId'=>$orderId,
+        ':firstname'=>$deliveryAddressFields['firstname'],
+        ':lastname'=>$deliveryAddressFields['lastname'],
+        ':address1'=>$deliveryAddressFields['address1'],
+        ':address2'=>$deliveryAddressFields['address2'],
+        ':country'=>$deliveryAddressFields['country'],
+        ':city'=>$deliveryAddressFields['city'],
+        ':zipCode'=>$deliveryAddressFields['zipCode'],
+     ];     
+
+     $created=$statement->execute($data);
+    if(false === $created){
+        echo printDBErrorMessage();
+        return false;
+    }
+    
+
+    $sql="INSERT INTO orders_products SET
             title = :title,
             quantity = :quantity,
             price = :price,
-            taxinPercent = :taxPercent,
-            orderId = :orderId ";
+            taxinPercent = :taxinPercent,
+            orderId = :orderId";
     
     $statement = getDB()-> prepare($sql);
+     if(false === $statement){
+        echo printDBErrorMessage();
+        return false;
+    }
+
     foreach($cartItems as $cartItem){
-        $taxinPercent=19;
-        $price = $cartItem['price'];
-        $netPrice =(100-($taxinPercent/100))*$price;
+        $taxinPercent = 19;
+        $price = $cartItem['preis'];
+        $netPrice = (1-($taxinPercent/100)) * $price;
 
         $data = [
-        ':title' => $cartItem['title'],
+        ':title' => $cartItem['titel'],
         ':quantity' => $cartItem['quantity'],
         ':price' => $netPrice,
         ':taxinPercent' => 19,
-        ':useId' => $userId
+        ':orderId' => $orderId
         ];
 
-        $statement -> execute($data);
+        $created=$statement->execute($data);
+    if(false === $created){
+        echo printDBErrorMessage();
+        break;
+    }
     }
     
-    return true;
+    return $created;
 
+}
+
+function getOrderForUser(int $orderId,int $userId):?array{
+    $sql="SELECT orderDate, userId, id, status
+        FROM orders
+        WHERE Id = :orderId AND userId=:userId
+        LIMIT 1 ";
+
+    $statement = getDB()->prepare($sql);
+    if(false === $statement){
+        echo printDBErrorMessage();
+        return null;
+    }
+
+    $statement -> execute([
+        ':orderId' => $orderId,
+        ':userId' => $userId 
+    ]);
+
+    if(0 === $statement->rowCount()){
+        return null;
+    }
+
+    $orderData = $statement->fetch();
+    $orderData ['products'] = [];
+    $orderData ['deliveryAddressFields']=[];
+    $sql="SELECT 
+    firstname,lastname,
+    address1,address2,
+    country,city,zipCode,`typ`
+    FROM order_address
+    WHERE order_id = :orderId LIMIT 1";
+
+    $statement = getDB()->prepare($sql);
+    if(false === $statement){
+        echo printDBErrorMessage();
+    return null;
+    }
+
+    $statement->execute([':orderId'=>$orderId]);
+    if(0 === $statement->rowCount()){
+        printDBErrorMessage();
+        return null;
+    }
+
+    $orderData['deliveryAddressFields']=$statement->fetch();
+
+    $sql = "SELECT id, title, quantity, price, taxinPercent
+            FROM orders_products
+            WHERE orderId = :orderId";
+
+    $statement = getDB()->prepare($sql);
+    if(false === $statement){
+        echo printDBErrorMessage();
+    return null;
+}
+
+    $statement -> execute([
+        ':orderId' => $orderId
+    ]);
+
+    if(0 === $statement->rowCount()){
+        return null;
+    }
+
+    while($row=$statement ->fetch()){
+        $orderData['products'][]=$row;
+    }
+    var_dump($orderData);
+    return $orderData;
 }

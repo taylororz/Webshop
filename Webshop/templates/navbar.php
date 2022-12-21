@@ -14,7 +14,7 @@
     </ul>
     <ul class="navbar-nav ml-auto">
 			<li class="nav-item">
-               <a class="btn btn-primary" href="./index.php/cart"> <i class="bi bi-cart"></i> Cart (<?=$countCartItems ?>)</a>
+               <a class="btn btn-primary" href="./index.php/cart"> <i class="bi bi-cart"></i> Cart <span class="badge text-bg-light"><?=$countCartItems ?></span></a>
             </li>
     </ul>
     </div>

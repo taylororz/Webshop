@@ -23,7 +23,6 @@ if(false !== $indexPHPPosition){
 $userId = getCurrentUserId();
 $countCartItems = countProductsInCart($userId);
 
-setcookie('userId',$userId,strtotime('+30 days'),$baseUrl);
 
 if(!$route){
     $products = getAllProducts();
@@ -32,8 +31,10 @@ if(!$route){
 }
 
 if(strpos($route,'/cart/add/')!==false){
+    redirectIfNotLogged('/login');
     $routeParts = explode('/',$route);
     $productId = (int)$routeParts[3];
+    $_SESSION['redirectTarget']=$baseUrl."index.php/cart/add/".$productId;
     addProductToCart($userId,$productId);
     header("Location:".$baseUrl."index.php");
     exit();
@@ -72,7 +73,7 @@ if(strpos($route,'/login')!== false){
         } 
         if(0 === count($errors)){
             $_SESSION['userId']=(int)$userData['id'];
-            moveCartProductsToAnotherUser($_COOKIE['userId'],(int)$userData['id']);
+
             $redirectTarget = $baseUrl.'index.php';
             if(isset($_SESSION['redirectTarget'])){
               $redirectTarget = $_SESSION['redirectTarget'];
@@ -97,10 +98,12 @@ if(strpos($route,'/checkout') !== false){
   $address1 = "";
   $address2 = "";
   $country= "";
-  $states= "";
+  $city= "";
   $zipCode = "";
   $isPost = isPost();
   $errors = [];
+  $deliveryAddresses = getDeliveryAddressesForUser($userId);
+
   
 
   if($isPost){
@@ -114,21 +117,25 @@ if(strpos($route,'/checkout') !== false){
     $address2=trim($address2);
     $country = filter_input(INPUT_POST,'country',FILTER_SANITIZE_SPECIAL_CHARS);
     $country=trim($country);
-    $states = filter_input(INPUT_POST,'states',FILTER_SANITIZE_SPECIAL_CHARS);
-    $states=trim($states);
+    $city = filter_input(INPUT_POST,'city',FILTER_SANITIZE_SPECIAL_CHARS);
+    $city=trim($city);
     $zipCode = filter_input(INPUT_POST,'zipCode',FILTER_SANITIZE_SPECIAL_CHARS);
     $zipCode=trim($zipCode);
 
     if(count($errors)===0){
-      $saveAddressForUser=saveAddressForUser($userId,$firstname,$lastname,$address1,$address2,$country,$states,$zipCode);
-      if($saveAddressForUser > 0){
-      $_SESSION['saveAddressForUser']=$saveAddressForUser;
+      $saveAddressForUser=saveAddressForUser($userId,$firstname,$lastname,$address1,$address2,$country,$city,$zipCode);
+      if($deliveryAddressId > 0){
+        $_SESSION['deliveryAddressId'] = $deliveryAddressId;
         header("Location: ".$baseUrl."index.php/success");
         exit();
-     }
+      }
+     
      $errors[]="Invalid address";
     }
    }
+
+   $hasErrors = count($errors) > 0;
+
   require __DIR__ .'/templates/checkout.php';
   exit();
    }
@@ -145,14 +152,43 @@ if(strpos($route,'/checkout') !== false){
     exit();
   }
 
+if(strpos($route,'/success') !== false){
+  redirectIfNotLogged('/checkout');
+  
+  $routeParts = explode('/',$route);
+  $deliveryAddressId = (int)$routeParts[2];
+  $_SESSION['deliveryAddressId'] = $deliveryAddressId;
 
-if(strpos($route,'/checkout/susscess') !== false){
-  redirectIfNotLogged('/checkout/susscess');
   $userId=getCurrentUserId();
   $cartItems = getCartItemsForUserId($userId);
-  if(createOrder($userId,$cartItems)){
+  $deliveryAddressFields=getAddressForUser($_SESSION['deliveryAddressId'],$userId);
+
+  if(createOrder($userId,$cartItems,$deliveryAddressFields)){
     clearCartForUser($userId);
-    require __DIR__ .'templates/thankyou.php';
+    require __DIR__ .'/templates/thankyou.php';
     exit();
   }
+}
+
+
+if(strpos($route,'/invoice') !== false){
+  redirectIfNotLogged('/');
+  $routeParts = explode('/',$route);
+  $invoiceId = null;
+  if(isset($routeParts[2])){
+    $invoiceId=(int)$routeParts[2];
+  }
+  if(!$invoiceId){
+    echo "You don't have order.";
+    exit();
+  }
+  $userId = getCurrentUserId();
+  $orderData = getOrderForUser($invoiceId,$userId);
+  
+  if(!$orderData){
+    echo "We don't find your data here.";
+    exit();
+  }
+  require __DIR__ .'/templates/invoice.php';
+  exit();
 }
