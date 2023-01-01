@@ -16,3 +16,10 @@
     border-bottom:1px solid #DDD;
     padding-bottom:15px;
 }
+
+.pdf-container{
+    width: 21cm;
+    height: 29.7cm;
+    position: relative;
+    z-index: 1;
+}

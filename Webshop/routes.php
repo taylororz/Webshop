@@ -184,6 +184,7 @@ if(strpos($route,'/invoice') !== false){
   }
   $userId = getCurrentUserId();
   $orderData = getOrderForUser($invoiceId,$userId);
+  $userData= getUserDataForId($userId);
   
   if(!$orderData){
     echo "We don't find your data here.";

@@ -114,6 +114,8 @@ function getOrderForUser(int $orderId,int $userId):?array{
     }
 
     $orderData = $statement->fetch();
+    $date=date_create($orderData['orderDate']);
+    $orderData ['orderDateFormat'] = date_format($date,'d.m.Y');
     $orderData ['products'] = [];
     $orderData ['deliveryAddressFields']=[];
     $sql="SELECT 
@@ -158,6 +160,5 @@ function getOrderForUser(int $orderId,int $userId):?array{
     while($row=$statement ->fetch()){
         $orderData['products'][]=$row;
     }
-    var_dump($orderData);
     return $orderData;
 }
