@@ -98,3 +98,10 @@
               </div>
             </div>
           </div>
+
+          password:gJFHRW
+          $2y$10$oqMcE6XTibAKg1kjyODA2.fJOC4KKRcSZQco9z8ggwh.9To3T6cJm
+
+          if((bool)$username && isset($userData['onetime_pw']) && false ===is_null($userData['onetime_pw'])){
+            $errors[]="Account is not actived.";
+          }

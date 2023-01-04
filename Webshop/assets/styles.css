@@ -23,3 +23,11 @@
     position: relative;
     z-index: 1;
 }
+
+  .pdf-container .total{
+    font-weight: bold;
+  }
+
+  .pdf-container #text{
+    text-align: right;
+}

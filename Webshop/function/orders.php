@@ -71,7 +71,7 @@ function createOrder(int $userId,array $cartItems,array $deliveryAddressFields,s
     foreach($cartItems as $cartItem){
         $taxinPercent = 19;
         $price = $cartItem['preis'];
-        $netPrice = (1-($taxinPercent/100)) * $price;
+        $netPrice = $price/(1+($taxinPercent/100));
 
         $data = [
         ':title' => $cartItem['titel'],
@@ -162,3 +162,27 @@ function getOrderForUser(int $orderId,int $userId):?array{
     }
     return $orderData;
 }
+
+function getOrderSumForUser(int $orderId,int $userId):?array{
+    $sql="SELECT SUM(price*quantity) AS sumNet,
+    CONVERT(SUM(price*quantity)*(1+taxInPercent/100), double) AS sumBrut,
+    CONVERT((SUM(price*quantity)*(1+taxInPercent/100)) - ( SUM(price*quantity) ),double) AS taxes
+    FROM orders_products op
+    INNER JOIN orders o ON(op.orderId = o.id)
+    WHERE userId = :userId
+    AND orderId = :orderId";
+ 
+    $statement = getDB()->prepare($sql);
+    if(false === $statement){
+      echo printDBErrorMessage();
+      return null;
+    }
+    $statement->execute([
+      ':orderId'=>$orderId,
+      ':userId'=>$userId
+    ]);
+    if(0 === $statement->rowCount()){
+      return null;
+    }
+    return $statement->fetch();
+  }

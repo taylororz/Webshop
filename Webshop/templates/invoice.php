@@ -9,15 +9,16 @@
 </head>
 <body>
 <div class="pdf-container">
+  <div class="container-fluid">
 <section class="row" id="companyLogo">
 </section>
 <section class="row" id="companyDetails">
-  <div>
-    <?= COMPANY_NAME ?> | <?= COMPANY_STREET ?> | <?= COMPANY_ZIP ?> <?= COMPANY_CITY?>
+  <div class="col-12">
+   <?= COMPANY_NAME ?> | <?= COMPANY_STREET ?> | <?= COMPANY_ZIP ?> <?= COMPANY_CITY?>
   </div>
 </section>
 <section class="row" id="invoiceAddress">
-  <div>
+  <div class="col-12">
     <?= $orderData['deliveryAddressFields']['firstname']?>
     <?= $orderData['deliveryAddressFields']['lastname']?>
     <?= $orderData['deliveryAddressFields']['address1']?>
@@ -29,35 +30,71 @@
   </div>
 </section>
 <section class="row" id="invoiceDetails">
-  <div class="col-2 offset-4">
+  <div class="col-3 offset-4">
   <strong>Customer Number:</strong>
   <p><?= $userData['customerNr']?></p>
   </div>
-  <div class="col-2">
+  <div class="col-3">
   <strong>Date of Invoice:</strong>
   <p><?= $orderData['orderDateFormat']?></p>
   </div>
 </section>
 <section class="row" id="invoiceHeader">
   <h1 class="col-12">Invoice Nr. <?=$orderData['id']?></h1>
-</section><section class="row" id="invoiceSentence">
+</section>
+<section class="row" id="invoiceSentence">
   <p>Thank you for your order.</p>
 </section>
     <section id="product">
-        <?php foreach($orderData['products'] as $order): ?>
-          <div>
-            <?=$order['title']?>
-            <?=$order['quantity']?>
-            <?=$order['price']?>
-            <?=$order['taxinPercent']?>
-          </div>
+      <table class="table">
+     <thead>
+       <tr>
+         <th>
+           Pos.
+         </th>
+         <th>
+           Title
+         </th>
+         <th>
+           Quantity
+         </th>
+         <th>
+           Price (€)
+         </th>
+         <th>
+           Total (€)
+         </th>
+       </tr>
+        </thead>
+        <tbody>
+        <?php foreach($orderData['products'] as $index=> $order): ?>
+          <tr>
+            <td><?= ++$index?></td>
+           <td> <?=$order['title']?> </td>
+            <td><?=$order['quantity']?> </td>
+            <td><?=number_format ($order['price'],2,"," , " ")?></td>
+           <td><?=number_format ($order['price']* $order['quantity'],2,"," , " ")?></td>
+          </tr>
         <?php endforeach ?>
-    </section>
-    <section class="row" id="sum">
-</section>
-<section class="row" id="invoiceDetailsFooter">
-</section>
-<section class="row" id="footer">
-</section>
+        </tbody>
+        <tfoot>
+          <tr>
+       <td colspan="4" id="text">Subtotal:</td>
+       <td><?=number_format ($orderSum['sumNet'],2,"," , " ")?>€</td>
+     </tr>
+     <tr>
+       <td colspan="4" id="text">Tax Rate 19%:</td>
+       <td><?=number_format ($orderSum['taxes'],2,"," , " ")?>€</td>
+     </tr>
+     <tr class="total">
+       <td colspan="4" id="text">Balance:</td>
+       <td><?=number_format ($orderSum['sumBrut'],2,"," , " ")?>€</td>
+      </tfoot>
+        </table>
+        </section>
+        <section class="row" id="invoiceDetailsFooter">
+   <p class="col-12">Payment within 14 days of receipt of the invoice without any deductions to the bank details given below.</p>
+ </section>
+  </div>
 </div>
-</body>
+<?php require_once __DIR__.'/footer.php'?>
