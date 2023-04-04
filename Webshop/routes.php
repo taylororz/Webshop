@@ -388,8 +388,8 @@ if (strpos($route, '/resetpw') !== false) {
         $mail->SMTPAuth = "true";
         $mail->SMTPSecure = "tls";
         $mail->Port = "587";
-        $mail->Username = "myshopebike@gmail.com";
-        $mail->Password = "bkdhgsfvuobiqnnj";
+        $mail->Username = "";
+        $mail->Password = "";
         $mail->isHTML(true);
         $mail->Body = file_get_contents($activationLink);
         $mail->Subject = "Password reset";
