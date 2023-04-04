@@ -3,7 +3,7 @@
               <h6 class="my-0"><?=$cartItem['titel']?></h6>
               <small class="text-muted"><?=$cartItem['beschreibung']?></small>
             </div>
-            <span class="text-muted"><?=number_format ($cartItem['preis'],2,"," , " ") ?> &#8364 </span>
+            <span class="text-muted"><?=number_format ($cartItem['preis']*$cartItem['quantity'],2,"," , " ") ?> &#8364 </span>
           </li>
           
          

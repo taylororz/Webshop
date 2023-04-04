@@ -5,6 +5,7 @@
     <ul class="navbar-nav">
         <li class="nav-item">
             <?php if(isLoggedIn()):?>
+                <a class="btn btn-primary" href="index.php/myOrder"><i class="bi bi-file-text"></i>My Order</a>
                 <a class="btn btn-danger" href="index.php/logout"><i class="bi bi-person"></i> Logout</a>
             <?php endif;?>
             <?php if(!isLoggedIn()):?>

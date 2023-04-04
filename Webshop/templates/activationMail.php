@@ -5,6 +5,9 @@
 <div class="card">
   <div class="card-header">
     <div class="row">
+    <div class="col-12">
+      <h1>Myshop<h1>
+    </div>
     <div class="offset-6 col-6 text-end">
     <div id="users">Username: <?= $username ?></div>
     <div id="registerDate">Registration date: <span class="time"><?=$activity?></span></div>
@@ -12,15 +15,14 @@
     </div>
  </div>
   <div class="card-body" id="content">
-    <p>Hi <?= $username ?>,</p>
+    <p>Hi <?= $name['firstname'] ?> <?= $name['lastname'] ?>,</p>
     <p>Thank you for your registration.<br />
-    To activate your account, click on the button::</p>
+    To activate your account, click on the button:</p>
     <p><a href="<?= $activationLink ?>" class="btn btn-success" role="button">Activate now</a></p>
-    <p>Or use the direct link by:  <?= $activationLink ?></p>
     <p>For manual activation please use the following code:</p>
-    <p><b>Your link</b> <?=$projectUrl ?>Aktivierung</p>
+    <p><b>Your link</b> <a href="<?=$projectUrl?>/index.php/login">Login</a></p>
     <p><b>Your username:</b> <?= $username ?><br />
-      <b>Your Activation Code:</b> <?=$activationKey?></p>
+      <b>Your Onetime Password:</b> <?=$activationKey?></p>
     <p>
       <hr />
     </p>

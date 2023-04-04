@@ -1,5 +1,5 @@
 <?php
- function addProductToCart(int $userId, int $productId, int $quantity = 1){
+ function addProductToCart(int $userId, int $productId, int $quantity){
     $sql="INSERT INTO `shopping cart` 
     SET quantity = :quantity, user_id = :userId, product_id = :productId
     ON DUPLICATE KEY UPDATE quantity = quantity +:quantity
@@ -17,7 +17,7 @@
    if(null === $userId){
       return 0;
    }
-    $sql ="SELECT COUNT(id) FROM `shopping cart` WHERE user_id =".$userId;
+    $sql ="SELECT SUM(quantity) FROM `shopping cart` WHERE user_id =".$userId;
     $cartResults = getDB()->query($sql);
     $cartItems =$cartResults->fetchColumn();
     return $cartItems;
@@ -46,14 +46,20 @@ function getCartSumForUserId(?int $userId){
    if(null === $userId){
       return 0;
    }
-   $sql="SELECT SUM(preis*quantity)
-         FROM `shopping cart`
-         JOIN products ON(`shopping cart`.product_id = products.id)
-         WHERE user_id = ".$userId;
-   $result = getDB()->query($sql);
+   $sql="WITH Total AS
+         (SELECT titel, preis, quantity, 
+         IF(quantity>=10,(preis*quantity*0.8),
+         IF(quantity>=5,(preis*quantity*0.9),(preis*quantity))) 
+         as total FROM `shopping cart` JOIN products ON(`shopping cart`.product_id = products.id)
+         WHERE user_id = :userId) SELECT SUM(total) FROM Total;";
+
+   $result = getDB()->prepare($sql);
    if($result===false){
       return 0;
    }
+   $result->execute([
+      ':userId'=>$userId
+   ]);
    return $result->fetchColumn();
 }
 
@@ -72,6 +78,8 @@ function deleteProductInCartForUserId(int $userId,int $productId):int{
    ]
    );
 }
+
+
 
 function moveCartProductsToAnotherUser(int $sourceUserId,int $targetUserId):int{
 
@@ -92,4 +100,40 @@ function moveCartProductsToAnotherUser(int $sourceUserId,int $targetUserId):int{
       $sql = "DELETE FROM `shopping cart` where user_Id = :user_Id";
       $statement = getDB()->prepare($sql);
       $statement ->execute([':user_Id'=>$userId]);
+   }
+
+   function getOriginalCartSumForUserId(?int $userId){
+      if(null === $userId){
+         return 0;
+      }
+      $sql="SELECT SUM(preis*quantity) AS total FROM `shopping cart` 
+      JOIN products ON(`shopping cart`.product_id = products.id) 
+      WHERE user_id = :userId";
+   
+      $result = getDB()->prepare($sql);
+      if($result===false){
+         return 0;
+      }
+      $result->execute([
+         ':userId'=>$userId
+      ]);
+      return $result->fetchColumn();
+   }
+
+   function changeCart($userId,$productId,$quantity){
+      $sql="UPDATE `shopping cart`
+            SET quantity=:quantity
+            WHERE user_id=:userId
+         AND product_id =:productId";
+      $statement = getDB()->prepare($sql);
+      if(false === $statement){
+         return 0;
+      }
+   
+      return $statement->execute([
+         ':quantity'=>$quantity,
+         ':userId'=>$userId,
+         ':productId'=>$productId
+      ]
+      );
    }

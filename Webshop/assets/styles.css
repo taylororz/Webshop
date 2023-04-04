@@ -24,10 +24,15 @@
     z-index: 1;
 }
 
-  .pdf-container .total{
-    font-weight: bold;
-  }
 
-  .pdf-container #text{
-    text-align: right;
-}
+.wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+  }
+  
+  .card {
+    display: flex;
+    width: auto;
+    height:100%
+  }

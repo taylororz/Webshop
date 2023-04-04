@@ -5,6 +5,6 @@ ini_set('display_errors','On');
 
 define('CONFIG_DIR',__DIR__.'/config');
 require_once __DIR__.'/includes.php';
-
+?>
 
 
