@@ -272,7 +272,7 @@ if (strpos($route, '/registration') !== false) {
         $mail->SMTPSecure = "tls";
         $mail->Port = "587";
         $mail->Username = "myshopebike@gmail.com";
-        $mail->Password = "bkdhgsfvuobiqnnj";
+        $mail->Password = "";
         $mail->isHTML(true);
         $mail->Body = file_get_contents($activationLink);
         $mail->Subject = "Activation";
@@ -449,7 +449,7 @@ if (strpos($route, '/myOrder/again') !== false) {
     $mail->SMTPSecure = "tls";
     $mail->Port = "587";
     $mail->Username = "myshopebike@gmail.com";
-    $mail->Password = "bkdhgsfvuobiqnnj";
+    $mail->Password = "";
     $mail->isHTML(true);
     $mail->Body = file_get_contents($invoiceLink);
     $mail->Subject = "Thank you for your order!";
@@ -553,7 +553,7 @@ if (strpos($route, '/checkout') !== false) {
         $mail->SMTPSecure = "tls";
         $mail->Port = "587";
         $mail->Username = "myshopebike@gmail.com";
-        $mail->Password = "bkdhgsfvuobiqnnj";
+        $mail->Password = "";
         $mail->isHTML(true);
         $mail->Body = file_get_contents($invoiceLink);
         $mail->Subject = "Thank you for your order!";
